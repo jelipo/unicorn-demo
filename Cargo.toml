@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 unicorn-engine = { version = "2.0.0-rc6" }
+anyhow = "1.0"
