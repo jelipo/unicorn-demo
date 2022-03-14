@@ -1,6 +1,5 @@
 use unicorn_engine::{RegisterARM, SECOND_SCALE, Unicorn};
 use unicorn_engine::RegisterARM::{LR, R0, R1, R10, R11, R12, R2, R3, R4, R5, R6, R7, R8, R9};
-use unicorn_engine::RegisterX86::R14;
 use unicorn_engine::unicorn_const::{Arch, Mode, Permission};
 
 pub struct ArmEmu {
