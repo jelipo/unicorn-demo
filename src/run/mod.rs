@@ -40,23 +40,43 @@ impl ArmEmu {
 fn print_emuinfo(emu: &mut Unicorn<()>) {
     println!(
         r"-----------------
-R0 :{:032b}  R1 :{:032b}  R2 :{:032b}  R3 :{:032b}
-R4 :{:032b}  R5 :{:032b}  R6 :{:032b}  R7 :{:032b}
-R8 :{:032b}  R9 :{:032b}  R10:{:032b}  R11:{:032b}
-R12:{:032b}  R13:{:032b}  LR :{:032b}
-PC  : {:032b}
-CSPR: {:032b}
-SP  : {:032b}
+R0 :{}  R1 :{}  R2 :{}  R3 :{}
+R4 :{}  R5 :{}  R6 :{}  R7 :{}
+R8 :{}  R9 :{}  R10:{}  R11:{}
+R12:{}  R13:{}  LR :{}
+PC  : {}    SP : {}
+CPSR: {}
+      NZCV_    _    _    _    _    _IFT _
 -----------------
 ",
-        read_reg(emu, R0), read_reg(emu, R1), read_reg(emu, R2), read_reg(emu, R3),
-        read_reg(emu, R4), read_reg(emu, R5), read_reg(emu, R6), read_reg(emu, R7),
-        read_reg(emu, R8), read_reg(emu, R9), read_reg(emu, R10), read_reg(emu, R11),
-        read_reg(emu, R12), read_reg(emu, R12), read_reg(emu, LR),
-        emu.pc_read().unwrap(), read_reg(emu, RegisterARM::CPSR), read_reg(emu, RegisterARM::SP)
+        reg_str(emu, R0), reg_str(emu, R1), reg_str(emu, R2), reg_str(emu, R3),
+        reg_str(emu, R4), reg_str(emu, R5), reg_str(emu, R6), reg_str(emu, R7),
+        reg_str(emu, R8), reg_str(emu, R9), reg_str(emu, R10), reg_str(emu, R11),
+        reg_str(emu, R12), reg_str(emu, R12), reg_str(emu, LR),
+        fmt_u32(emu.pc_read().unwrap() as u32), reg_str(emu, RegisterARM::SP),
+        reg_str(emu, RegisterARM::CPSR),
     );
+}
+
+fn reg_str(emu: &mut Unicorn<()>, reg: RegisterARM) -> String {
+    fmt_u32(read_reg(emu, reg))
 }
 
 fn read_reg(emu: &mut Unicorn<()>, reg: RegisterARM) -> u32 {
     emu.reg_read(reg).unwrap() as u32
+}
+
+fn fmt_u32(num: u32) -> String {
+    let string = format!("{:032b}", num);
+    let bytes = string.as_bytes();
+    let mut new_bytes = vec![95u8; 39];
+    new_bytes[0..4].clone_from_slice(&bytes[0..4]);
+    new_bytes[5..9].clone_from_slice(&bytes[4..8]);
+    new_bytes[10..14].clone_from_slice(&bytes[8..12]);
+    new_bytes[15..19].clone_from_slice(&bytes[12..16]);
+    new_bytes[20..24].clone_from_slice(&bytes[16..20]);
+    new_bytes[25..29].clone_from_slice(&bytes[20..24]);
+    new_bytes[30..34].clone_from_slice(&bytes[24..28]);
+    new_bytes[35..39].clone_from_slice(&bytes[28..32]);
+    String::from_utf8_lossy(&new_bytes).to_string()
 }
