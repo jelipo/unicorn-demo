@@ -3,7 +3,7 @@ use crate::ArmEmu;
 #[test]
 pub fn test() {
     let ops = vec![
-        0b0000_1011_1000_0000_0000_0000_0000_0001u32, //BX
+        0b1110_1011_0000_0000_0000_0000_1111_1111u32, //BL
     ];
     let reg = vec![];
     let emu = ArmEmu::new(ops);
